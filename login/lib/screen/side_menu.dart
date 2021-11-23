@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:login/screen/api_screen.dart';
 import 'package:login/screen/info.dart';
+import 'package:login/screen/oop_student/student_list.dart';
 
 class SideMenu extends StatelessWidget {
   @override
@@ -42,7 +43,7 @@ class SideMenu extends StatelessWidget {
                   ),
                   line,
                   ExpansionTile(
-                    title: Text("Başlık3"),
+                    title: Text("Firebase"),
                     leading: Icon(Icons.account_box),
                     children: [
                       Container(
@@ -60,9 +61,10 @@ class SideMenu extends StatelessWidget {
                         margin: EdgeInsets.only(left: 10.0),
                         child: ListTile(
                           leading: const Icon(Icons.rate_review),
-                          title: const Text("AltBaşlık2"),
+                          title: const Text("OOP Students"),
                           onTap: () {
-                            Navigator.pop(context);
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) => StudentList()));
                           },
                         ),
                       ),
