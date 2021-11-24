@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:login/models/oop_student.dart';
 import 'package:login/screen/oop_student/student_add.dart';
@@ -11,16 +12,11 @@ class StudentList extends StatefulWidget {
 }
 
 class _StudentListState extends State<StudentList> {
-  late Student selectedStudent = Student.withId(0, "", "", 0, "");
-  List<Student> students = [
-    Student.withId(1, "Muttalip", "Olgun", 25,
-        "https://cdn.pixabay.com/photo/2013/07/13/10/07/man-156584_960_720.png"),
-    Student.withId(2, "Nurseli", "Ozgur", 65,
-        "https://cdn.pixabay.com/photo/2016/11/18/23/38/child-1837375_960_720.png"),
-    Student.withId(3, "Ahmet", "Olgun", 45,
-        "https://cdn.pixabay.com/photo/2013/07/13/10/07/man-156584_960_720.png")
-  ];
-
+  late String selectedStudentTC = "";
+  late String selectedStudentFirstName = "";
+  late String selectedStudentLastName = "";
+  late String selectedStudentGrade = "";
+  late String selectedStudentAvatarURL = "";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,107 +26,161 @@ class _StudentListState extends State<StudentList> {
   Widget buildBody(BuildContext context) {
     return Column(
       children: [
-        Expanded(
-            child: ListView.builder(
-                itemCount: students.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return ListTile(
-                    leading: CircleAvatar(
-                      backgroundImage:
-                          NetworkImage(students[index].avatarURL.toString()),
-                    ),
-                    title: Text(students[index].getFirstName +
-                        " " +
-                        students[index].lastName),
-                    subtitle: Text("Sinavdan Aldigi Not : " +
-                        students[index].grade.toString() +
-                        "{" +
-                        students[index].getStatus +
-                        "}"),
-                    trailing: buildStatusIcon(students[index].grade),
-                    onTap: () {
-                      setState(() {
-                        selectedStudent = students[index];
-                      });
-                    },
-                    onLongPress: () {
-                      Sonuc(students[index].getStatus, context);
-                    },
-                  );
+        FutureBuilder<QuerySnapshot>(
+            future: FirebaseFirestore.instance.collection("students").get(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                final List<DocumentSnapshot> arrData = snapshot.data!.docs;
+                return Column(
+                  children: [
+                    ListView(
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      children: arrData.map((data) {
+                        return Column(
+                          children: [
+                            ListTile(
+                              leading: CircleAvatar(
+                                child: FadeInImage(
+                                  alignment: Alignment.center,
+                                  image: NetworkImage(data["avatarURL"]),
+                                  placeholder: AssetImage(
+                                    "assets/images/notfound.png",
+                                  ),
+                                  imageErrorBuilder:
+                                      (context, error, stackTrace) {
+                                    return Image.asset(
+                                      "assets/images/notfound.png",
+                                      fit: BoxFit.fitWidth,
+                                    );
+                                  },
+                                  width: 50,
+                                  height: 50,
+                                ),
+                              ),
+                              title: Text(
+                                  data["FirstName"] + " " + data["LastName"]),
+                              subtitle: Text("Sinavdan Aldigi Not : " +
+                                  data["grade"].toString()),
+                              trailing:
+                                  buildStatusIcon(int.parse(data["grade"])),
+                              onTap: () {
+                                setState(() {
+                                  selectedStudentFirstName = data["FirstName"];
+                                  selectedStudentLastName = data["LastName"];
+                                  selectedStudentTC = data["tc"];
+                                  selectedStudentGrade = data["grade"];
+                                  selectedStudentAvatarURL = data["avatarURL"];
+                                });
+                              },
+                              onLongPress: () {
+                                Sonuc(getStatus(int.parse(data["grade"])),
+                                    context);
+                              },
 
-                  //Text(students[index].firstName);
-                })),
-        Text("Seçilen öğrenci : " + selectedStudent.firstName),
-        Row(
-          children: [
-            Flexible(
-              fit: FlexFit.tight,
-              flex: 2,
-              child: RaisedButton(
-                color: Colors.deepPurple,
-                child: Row(
-                  children: [
-                    Icon(Icons.add),
-                    SizedBox(
-                      width: 5.0,
+                            ),
+                            const Divider(
+                              color: Colors.black,
+                            ),
+                          ],
+                        );
+                      }).toList(),
                     ),
-                    Text("Yeni Ogrenci"),
+                    Text("Seçilen öğrenci No : " + selectedStudentTC,style: const TextStyle(color: Colors.redAccent),),
+                    Text("Seçilen öğrenci : " + selectedStudentFirstName + " " + selectedStudentLastName,style: TextStyle(color: Colors.redAccent),),
+
                   ],
-                ),
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => StudentAdd(students)));
-                },
-              ),
-            ),
-            Flexible(
-              fit: FlexFit.tight,
-              flex: 2,
-              child: RaisedButton(
-                color: Colors.black12,
-                child: Row(
-                  children: [
-                    Icon(Icons.update),
-                    SizedBox(
-                      width: 5.0,
+                );
+              } else {
+                return const Center(
+                  child: Text("No data Found"),
+                );
+              }
+            }),
+        /////////
+        Expanded(
+          child: Align(
+              alignment: FractionalOffset.bottomCenter,
+              child: Container(
+                child:  Padding(
+                    padding: EdgeInsets.only(bottom: 3.0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Flexible(
+                          fit: FlexFit.tight,
+                          flex: 2,
+                          child: RaisedButton(
+                            color: Colors.deepPurple,
+                            child: Row(
+                              children: const [
+                                Icon(Icons.add),
+                                SizedBox(
+                                  width: 5.0,
+                                  height: 5.0,
+                                ),
+                                Text("Yeni Ogrenci"),
+                              ],
+                            ),
+                            onPressed: () {
+                              setState(() {});
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => StudentAdd()));
+                            },
+                          ),
+                        ),
+                        Flexible(
+                          fit: FlexFit.tight,
+                          flex: 2,
+                          child: RaisedButton(
+                            color: Colors.black12,
+                            child: Row(
+                              children: const [
+                                Icon(Icons.update),
+                                SizedBox(
+                                  width: 5.0,
+                                  height: 5.0,
+                                ),
+                                Text("GUNCELLE"),
+                              ],
+                            ),
+                            onPressed: () {
+                                  Navigator.push(context,MaterialPageRoute(builder: (context) => StudentEdit(selectedStudentTC,selectedStudentFirstName,selectedStudentLastName,selectedStudentGrade,selectedStudentAvatarURL))); ///DUZENLE
+                            },
+                          ),
+                        ),
+                        Flexible(
+                          fit: FlexFit.tight,
+                          flex: 1,
+                          child: RaisedButton(
+                            color: Colors.amber,
+                            child: Row(
+                              children: const [
+                                Icon(Icons.delete),
+                                SizedBox(
+                                  width: 5.0,
+                                  height: 5.0,
+                                ),
+                                Text("SIL"),
+                              ],
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                Sonuc("Silindi : " + selectedStudentFirstName + " " + selectedStudentLastName, context);
+                                Student().deleteUser(selectedStudentTC);
+                              });
+                            },
+                          ),
+                        ),
+                      ],
                     ),
-                    Text("GUNCELLE"),
-                  ],
-                ),
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => StudentEdit(selectedStudent)));
-                },
-              ),
-            ),
-            Flexible(
-              fit: FlexFit.tight,
-              flex: 1,
-              child: RaisedButton(
-                color: Colors.amber,
-                child: Row(
-                  children: [
-                    Icon(Icons.delete),
-                    SizedBox(
-                      width: 5.0,
-                    ),
-                    Text("SIL"),
-                  ],
-                ),
-                onPressed: () {
-                  setState(() {
-                    Sonuc("Silindi : " + selectedStudent.firstName, context);
-                    students.remove(selectedStudent);
-                  });
-                },
-              ),
-            ),
-          ],
-        )
+                  ),
+              )),
+        ),
       ],
     );
   }
@@ -145,24 +195,23 @@ class _StudentListState extends State<StudentList> {
     }
   }
 
-  String SinaviHesapla() {
-    int puan = 55;
-    String mesaj = "";
-    if (puan >= 50) {
-      mesaj = "Gecti";
-    } else if (puan >= 40) {
-      mesaj = "Butunlemeye Kaldi";
-    } else {
-      mesaj = "Kaldi";
-    }
-    return mesaj;
-  }
-
   void Sonuc(String mesaj, BuildContext context) {
     var alert = AlertDialog(
       title: Text("İşlem Sonucu"),
       content: Text(mesaj),
     );
     showDialog(context: context, builder: (BuildContext context) => alert);
+  }
+
+  String getStatus(int grade) {
+    String message = "";
+    if (grade >= 50) {
+      message = "Gecti";
+    } else if (grade >= 40) {
+      message = "Butunlemeye Kaldi";
+    } else {
+      message = "Kaldi";
+    }
+    return message;
   }
 }

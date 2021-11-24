@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -67,7 +66,7 @@ class _UserEditWidgetState extends State<UserEditWidget> {
                                                     height: 150,
                                                     width: 150,
                                                     fit: BoxFit.fitWidth,
-                                                  )
+                                                  ),
                                   ],
                                 ),
                                 uploadPath == ""
@@ -135,7 +134,9 @@ class _UserEditWidgetState extends State<UserEditWidget> {
                           SizedBox(
                             height: 15,
                           ),
-                          UserInfoEditForm(userid: userid,),
+                          UserInfoEditForm(
+                            userid: userid,
+                          ),
                         ],
                       ),
                     );
@@ -192,7 +193,7 @@ class _UserInfoEditFormState extends State<UserInfoEditForm>
   late String nickname;
   final String userid;
   _UserInfoEditFormState(this.userid);
- var buttonColor = Colors.blue[400];
+  var buttonColor = Colors.blue[400];
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -203,9 +204,9 @@ class _UserInfoEditFormState extends State<UserInfoEditForm>
             style: const TextStyle(color: Colors.black),
             decoration: const InputDecoration(
               prefixIcon: Icon(Icons.person),
-              hintText: "nickname" ,
+              hintText: "nickname",
               focusedBorder: OutlineInputBorder(
-                borderSide:  BorderSide(color: Colors.black45, width: 1.0),
+                borderSide: BorderSide(color: Colors.black45, width: 1.0),
                 borderRadius: BorderRadius.all(
                   Radius.circular(100.0),
                 ),
@@ -216,10 +217,9 @@ class _UserInfoEditFormState extends State<UserInfoEditForm>
               nickname = val!;
             },
           ),
-        const SizedBox(
-          height: 10,
-        ),
-          
+          const SizedBox(
+            height: 10,
+          ),
           SizedBox(
             height: 54,
             width: 50,
@@ -228,12 +228,12 @@ class _UserInfoEditFormState extends State<UserInfoEditForm>
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
                   _formKey.currentState!.save();
-                  CloudFirestore().updateUserName(nickname,userid);
+                  CloudFirestore().updateUserName(nickname, userid);
                   setState(() {
                     buttonColor = Colors.green[400];
                   });
-                  }
-                },
+                }
+              },
               shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(24.0))),
               color: buttonColor,
@@ -244,7 +244,6 @@ class _UserInfoEditFormState extends State<UserInfoEditForm>
               ),
             ),
           ),
-
           const SizedBox(
             height: 10,
           ),

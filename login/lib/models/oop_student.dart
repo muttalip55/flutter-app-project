@@ -1,47 +1,35 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+
+
 class Student{
-  int id = 0;
-  String firstName = "";
-  String lastName = "";
-  int grade = 0;
-  String _status ="";
-  String avatarURL = "";
+ late String id ;
+ late String firstName;
+ late String lastName;
+ late String grade;
+ late String avatarURL;
+ Student();
 
-  Student.withId(int id, String firstName, String lastName, int grade, String avatarURL){
-    this.id = id;
-    this.firstName = firstName;
-    this.lastName = lastName;
-    this.grade = grade;
-    this.avatarURL = avatarURL;
-  }
-
-  Student( String firstName, String lastName, int grade, String avatarURL){
-    this.firstName = firstName;
-    this.lastName = lastName;
-    this.grade = grade;
-    this.avatarURL = avatarURL;
-  }
-  Student.withoutInfo(){
-
-  }
-  String get getFirstName{
-    return "OGR - " + this.firstName;
+  createStudentData(String tc, String firstName, String lastName,String grade,String avatarURL) {
+    DocumentReference documentReference =
+    FirebaseFirestore.instance.collection("students").doc(tc);
+    Map<String,String> studentList = {
+      "avatarURL": avatarURL,
+      "FirstName": firstName,
+      "LastName": lastName,
+      "grade": grade,
+      "tc": tc,
+    };
+    documentReference
+        .set(studentList)
+        .whenComplete(() => print("print stored successfully"));
   }
 
-  void set setFirstName(String value){
-    this.firstName = value;
-  }
+ updateUser(String tc, String firstName, String lastName,String grade,String avatarURL){
+   FirebaseFirestore.instance.collection("students").doc(tc).update({"tc" : tc,"FirstName":firstName,"LastName": lastName,"grade" : grade,"avatarURL": avatarURL});
+ }
 
-  String get getStatus{
-    String message = "";
-    if (this.grade >= 50) {
-      message = "Gecti";
-    }
-    else if (this.grade >= 40) {
-      message = "Butunlemeye Kaldi";
-    }
-    else {
-      message = "Kaldi";
-    }
-    return message;
-  }
+ deleteUser(String tc){
+   FirebaseFirestore.instance.collection("students").doc(tc).delete();
+ }
 }

@@ -32,7 +32,5 @@ class AuthenticationHelper {
   //SIGN OUT METHOD
   Future<void> signOut() async {
     await _auth.signOut();
-
-    print('signout');
   }
 }

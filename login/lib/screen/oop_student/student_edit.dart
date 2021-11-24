@@ -6,84 +6,124 @@ import 'package:login/widgets/appbar_widget.dart';
 
 
 class StudentEdit extends StatefulWidget {
-  var selectedStudent;
-  StudentEdit(Student selectedStudent) {
-    this.selectedStudent = selectedStudent;
-  }
+  var selectedStudentTC;
+  var selectedStudentFirstName;
+  var selectedStudentLastName;
+  var selectedStudentGrade;
+  var selectedStudentAvatarURL;
+  StudentEdit(this.selectedStudentTC,this.selectedStudentFirstName,this.selectedStudentLastName,this.selectedStudentGrade,this.selectedStudentAvatarURL, {Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return _StudentAddState(selectedStudent);
+    return _StudentAddState(selectedStudentTC,selectedStudentFirstName,selectedStudentLastName,selectedStudentGrade,selectedStudentAvatarURL);
   }
 }
 
 class _StudentAddState extends State with StudentValidationMixin {
-  var selectedStudent;
+  var selectedStudentTC;
+  var selectedStudentFirstName;
+  var selectedStudentLastName;
+  var selectedStudentGrade;
+  var selectedStudentAvatarURL;
+
   var keyForm = GlobalKey<FormState>();
 
-  _StudentAddState(Student students) {
-    selectedStudent = students;
-  }
+  _StudentAddState(this.selectedStudentTC,this.selectedStudentFirstName,this.selectedStudentLastName,this.selectedStudentGrade,this.selectedStudentAvatarURL);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Colors.blueGrey,
         appBar: AppBarWidget("Student Edit"),
-        body: Container(
-          margin: EdgeInsets.all(20.0),
-          child: Form(
-            key: keyForm,
-            child: Column(
-              children: <Widget>[
-                buildFirstNameField(),
-                buildLastNameField(),
-                buildGradeField(),
-                buildSubmitButton()
-              ],
+        body: ListView(
+      children:  [
+          Container(
+            margin: EdgeInsets.all(20.0),
+            child: Form(
+              key: keyForm,
+              child: Column(
+                children: <Widget>[
+                  const SizedBox(
+                    height: 15.0,
+                  ),
+                  selectedStudentAvatarURL != ""
+                      ? Image(
+                    image: NetworkImage(
+                        selectedStudentAvatarURL),width: 150,height: 150,
+                  )
+                      : Image.asset(
+                    "assets/images/notfound.png",
+                    height: 150,
+                    width: 150,
+                  ),
+
+
+                  const SizedBox(
+                    height: 15.0,
+                  ),
+                  buildFirstNameField(),
+                  const SizedBox(
+                    height: 15.0,
+                  ),
+                  buildLastNameField(),
+                  const SizedBox(
+                    height: 15.0,
+                  ),
+                  buildGradeField(),
+                  const SizedBox(
+                    height: 15.0,
+                  ),
+                  buildSubmitButton(),
+                  const SizedBox(
+                    height: 15.0,
+                  ),
+                ],
+              ),
             ),
           ),
-        ));
+        ],),);
   }
 
   Widget buildFirstNameField() {
     return TextFormField(
-        initialValue: selectedStudent.firstName,
+        initialValue: selectedStudentFirstName,
         decoration:
-        InputDecoration(labelText: "Öğrenci Adı", hintText: "Muttalip"),
+        const InputDecoration(labelText: "Öğrenci Adı", hintText: "Öğrenci Adı",prefixIcon: Icon(Icons.account_circle_sharp),),
         validator: validateFirstName,
         onSaved: (String? value) {
-          selectedStudent.firstName = value!;
+          selectedStudentFirstName = value!;
         });
   }
 
   Widget buildLastNameField() {
     return TextFormField(
-        initialValue: selectedStudent.lastName,
+        initialValue: selectedStudentLastName,
         decoration:
-        InputDecoration(labelText: "Öğrenci SoyAdı", hintText: "Olgun"),
+        const InputDecoration(labelText: "Öğrenci SoyAdı", hintText: "Öğrenci SoyAdı",prefixIcon: Icon(Icons.account_circle_sharp),),
         validator: validateLastName,
         onSaved: (String? value) {
-          selectedStudent.lastName = value!;
+          selectedStudentLastName = value!;
         });
   }
 
   Widget buildGradeField() {
     return TextFormField(
-        initialValue: selectedStudent.grade.toString(),
-        decoration: InputDecoration(labelText: "Öğrenci Notu", hintText: "65"),
+        initialValue: selectedStudentGrade.toString(),
+        decoration: const InputDecoration(labelText: "Öğrenci Notu", hintText: "Öğrenci Notu", prefixIcon: Icon(Icons.grade),),
         validator: validateGrade,
         onSaved: (String? value) {
-          selectedStudent.grade = int.parse(value!);
+          selectedStudentGrade = value!;
         });
   }
 
   Widget buildSubmitButton() {
     return RaisedButton(
-      child: Text("KAYDET"),
+      child: const Text("KAYDET"),
       onPressed: () {
         setState(() {
           if (keyForm.currentState!.validate()) {
             keyForm.currentState!.save();
+            Student().updateUser(selectedStudentTC, selectedStudentFirstName, selectedStudentLastName, selectedStudentGrade, selectedStudentAvatarURL);
             Navigator.pop(context);
           }
         });

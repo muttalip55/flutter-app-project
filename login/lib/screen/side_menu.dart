@@ -50,7 +50,7 @@ class SideMenu extends StatelessWidget {
                         margin: EdgeInsets.only(left: 10.0),
                         child: ListTile(
                           leading: const Icon(Icons.event),
-                          title: const Text("AltBaşlık1"),
+                          title: const Text("Firebase example"),
                           onTap: () {
                             Navigator.pop(context);
                           },
@@ -61,7 +61,7 @@ class SideMenu extends StatelessWidget {
                         margin: EdgeInsets.only(left: 10.0),
                         child: ListTile(
                           leading: const Icon(Icons.rate_review),
-                          title: const Text("OOP Students"),
+                          title: const Text("OOP Firebase Students"),
                           onTap: () {
                             Navigator.push(context,
                                 MaterialPageRoute(builder: (context) => StudentList()));

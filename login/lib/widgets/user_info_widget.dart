@@ -101,6 +101,22 @@ class _UserInfoWidgetState extends State<UserInfoWidget>
                               )
                             ],
                           ),
+                        Column(
+                          children: [
+                            const Padding(
+                                padding: EdgeInsets.only(top: 15.0)),
+                            Center(
+                              child: OutlinedButton.icon(
+                                  onPressed: () {
+                                    setState(() {
+                                      UserInfoWidget(userid: userid);
+                                    });
+                                  },
+                                  icon: Icon(Icons.replay),
+                                  label: Text("Yenile")),
+                            )
+                          ],
+                        ),
                       ],
                     ),
                   );
