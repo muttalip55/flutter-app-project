@@ -103,7 +103,7 @@ class _StudentListState extends State<StudentList> {
               alignment: FractionalOffset.bottomCenter,
               child: Container(
                 child:  Padding(
-                    padding: EdgeInsets.only(bottom: 3.0),
+                    padding: const EdgeInsets.only(bottom: 3.0),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisSize: MainAxisSize.max,

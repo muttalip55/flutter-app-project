@@ -129,14 +129,9 @@ class _UserEditWidgetState extends State<UserEditWidget> {
                                 _selectedFileName == ""
                                     ? Container(child: Text(_selectedFileName))
                                     : Text("File Name :" + _selectedFileName),
+                                UserInfoEditForm(userid: userid,),
                               ],
                             ),
-                          SizedBox(
-                            height: 15,
-                          ),
-                          UserInfoEditForm(
-                            userid: userid,
-                          ),
                         ],
                       ),
                     );
@@ -148,6 +143,7 @@ class _UserEditWidgetState extends State<UserEditWidget> {
                 );
               }
             }),
+
       ),
     );
   }

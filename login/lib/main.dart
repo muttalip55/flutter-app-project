@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:login/screen/home.dart';
 import 'package:login/screen/oop_student/student_list.dart';
 import 'screen/registry/login.dart';
 
@@ -59,7 +60,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       title: 'Flutter App',
-      home:  StudentList(),
+      home:  Login(),
     );
   }
 }

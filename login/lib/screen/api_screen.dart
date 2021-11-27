@@ -30,17 +30,21 @@ class ApiScreenState extends State {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarWidget("Api"),
+      backgroundColor: Colors.teal,
+      appBar: AppBarWidget("RESTFUL"),
       body:SingleChildScrollView(
      child: Padding(
         padding: EdgeInsets.all(10.0),
         child: Column(
           children: <Widget>[
+            SizedBox(height: 10.0,),
             SingleChildScrollView(
+              padding: EdgeInsets.all(15.0),
               scrollDirection: Axis.horizontal,
               child: Row(children: categoryWidgets),
             ),
-            ProductListWidget(products)
+            ProductListWidget(products),
+            SizedBox(height: 10.0,),
           ],
         ),
       ),
@@ -68,13 +72,14 @@ class ApiScreenState extends State {
 
   Widget getCategoryWidget(Category category) {
     return FlatButton(
+      color: Colors.lime.shade50,
       child: Text(
         category.categoryName,
-        style: TextStyle(color: Colors.blueGrey),
+        style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold)
       ),
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
-          side: BorderSide(color: Colors.lightBlue)),
+      borderRadius: BorderRadius.circular(15.0),
+          side: BorderSide(color: Colors.lightBlue),),
       onPressed: () {
         getProductByCategoryId(category);
       },
